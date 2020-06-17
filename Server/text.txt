@@ -1,1 +1,5 @@
+Pour faire macher le server:
+npm install
+npm start or nodemon server
+
 
