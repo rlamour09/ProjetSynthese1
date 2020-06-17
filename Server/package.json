@@ -1,0 +1,22 @@
+{
+  "name": "webrtc_websocketserver",
+  "version": "1.0.0",
+  "description": "Familiariser avec WebRTC",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "author": "Raymond and Junior",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4",
+    "websocket": "^1.0.31",
+    "ws": "^7.3.0"
+  }
+}
