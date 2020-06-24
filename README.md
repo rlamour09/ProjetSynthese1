@@ -1,6 +1,11 @@
 # ProjetSynthese1(peer to peer; WebRTC)
-Pour faire fonctionner le server signalisation 
-1- ouvrir command prompt (CMD) puis se placer dans la racine du dossier server 
+# Pour faire fonctionner le server signalisation cloner le sur github puis:
+* 1- ouvrir command prompt (CMD) puis se placer dans la racine du dossier server 
+<1 - Taper: npm install >
+       <2-Taper: npm start>
+si toutefois il y a des erreurs suivre les instructions au point 2 ci-dessous
+
+* 2- Ouvrir command prompt (CMD) puis se placer dans la racine du dossier server 
 en suite installer les dépendances:
 voici les commandes:
 * npm install express
