@@ -5,11 +5,10 @@
 * 2- Taper: npm start
 * 3- Maintenant ouvre le dossier Fichiers puis ouvre le fichier index.html avec le navigateur Google Chrome
 
-si toutefois il y a des erreurs suivre les instructions au point 2 ci-dessous
+Si toutefois il y a des erreurs suivre les instructions au point 2 ci-dessous
 
 ## 2- Ouvrir command prompt (CMD) puis se placer dans la racine du dossier server 
-en suite installer les dépendances:
-voici les commandes:
+###En suite installer les dépendances; voici les commandes:
 * npm install express
 * npm install websocket
 * npm install ws 
@@ -17,7 +16,7 @@ voici les commandes:
 ## Apres que les dépandences sont installés faire:
 * npm install
 * npm start or nodemon server
-pour voir si le server est en ligne juste ouvre votre navigateur et taper (localhost:9090)
+Pour voir si le server est en ligne juste ouvre votre navigateur et taper (localhost:9090)
 
 Maintenant ouvre le dossier Fichiers puis ouvre le fichier index.html avec le navigateur Google Chrome
 
