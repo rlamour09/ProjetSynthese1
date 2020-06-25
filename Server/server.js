@@ -3,14 +3,14 @@ var WebSocketServer = require('ws').Server;
  
 //creating a websocket server at port 9090 
 var wss = new WebSocketServer({port: 9090}); 
-console.log("Server runing on localhost:9090");
+
 //all connected to the server users 
 var users = {};
 
 //when a user connects to our sever 
 wss.on('connection', function(connection) {
   
-   console.log("Browser of the User connected with success");
+   console.log("User connected");
 	
    //when server gets a message from a connected user
    connection.on('message', function(message) { 
@@ -29,7 +29,7 @@ wss.on('connection', function(connection) {
          //when a user tries to login 
 			
          case "login": 
-            console.log("User logged as:", data.name); 
+            console.log("User logged", data.name); 
 				
             //if anyone is logged in with this username then refuse 
             if(users[data.name]) { 
@@ -93,14 +93,13 @@ wss.on('connection', function(connection) {
                sendTo(conn, { 
                   type: "candidate", 
                   candidate: data.candidate 
-                  //console.log()
                });
             } 
 				
             break;  
 				
          case "leave": 
-            console.log("disconnecting from:",data.name); 
+            console.log("Disconnecting from", data.name); 
             var conn = users[data.name]; 
             conn.otherName = null; 
 				
@@ -121,8 +120,6 @@ wss.on('connection', function(connection) {
 				
             break; 
       }  
-
-
    });  
 	
    //when user exits, for example closes a browser window 
@@ -133,7 +130,7 @@ wss.on('connection', function(connection) {
       delete users[connection.name]; 
 		
          if(connection.otherName) { 
-            console.log(connection.otherName,"is disconnected now connect again!");
+            console.log("Disconnecting from ", connection.otherName);
             var conn = users[connection.otherName]; 
             conn.otherName = null;  
 				
