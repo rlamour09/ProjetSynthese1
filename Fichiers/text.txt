@@ -1,1 +1,0 @@
-les deux fichier doit rester dans un meme folder pour ouvrir le fichier index html
