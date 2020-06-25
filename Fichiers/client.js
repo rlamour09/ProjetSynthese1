@@ -1,9 +1,7 @@
 var connection = new WebSocket('ws://localhost:9090');
 var name = "";
-
 var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn');
-
 var otherUsernameInput = document.querySelector('#otherUsernameInput');
 var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn');
 var msgInput = document.querySelector('#msgInput');
@@ -14,7 +12,6 @@ var chatArea = document.querySelector('#chatarea');
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
-    
    if(name.length > 0) {
       send({
          type: "login",
@@ -23,7 +20,7 @@ loginBtn.addEventListener("click", function(event) {
    }
 });
  
-
+/*
 // create the data base to save send messages
 function errorHandler(tx, error){
 
@@ -42,27 +39,39 @@ var db= openDatabase('send_message', '1.0', 'Send message to another peer', 5*10
      
    });
 
+*/
 
-/*
-   db.transaction(function (tx) { 
-      tx.executeSql('CREATE TABLE IF NOT EXISTS LOGS (id unique, log)'); 
-      tx.executeSql('INSERT INTO LOGS (id, log) VALUES (1, "foobar")'); 
-      tx.executeSql('INSERT INTO LOGS (id, log) VALUES (2, "logmsg")'); 
-   }); 
-   */
-   
-   function Insert() {  
-         
+// create the database to save send messages
+var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
+  
+function insertData (){ 
+
+db.transaction(function (tx) { 
+tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (name, messenger)'); 
+    
+    var txt1=document.getElementById("loginInput").value;
+    var txt2=document.getElementById("msgInput").value;
+    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+txt1+'", "'+txt2+'")'); 
+ 
+         })
+
+                
+         }
+// create the data base to save receive messages
+
+//var savedb = openDatabase('messageColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
+  
+   function saveData() {  
+       
    db.transaction(function (tx) {
-   tx.executeSql('CREATE TABLE IF NOT EXISTS Document (message)');
-   var message=document.getElementById("chatarea").value;
-   tx.executeSql('INSERT INTO Document VALUES ("'+message+'")');
+   tx.executeSql('CREATE TABLE IF NOT EXISTS ReceiveNote (message)');
+   var text=document.getElementById("chatarea").value;
+   tx.executeSql('INSERT INTO ReceiveNote VALUES ("'+text+'")');
      
-         });
+         })
                  
        }
 //End of database
-
 
 //handle messages from the server
 connection.onmessage = function (message) {
@@ -85,6 +94,7 @@ connection.onmessage = function (message) {
       default:
          break;
    }
+   console.log("");
 };
  
 //when a user logs in
@@ -125,7 +135,7 @@ function onLogin(success) {
 
     //when we receive a message from the other peer, display it on the screen
     dataChannel.onmessage = function (event) {
-      chatArea.innerHTML += connectedUser + ": " + event.data + "<br />";
+      chatArea.innerHTML += connectedUser + ": " + event.data; //+ "<br />";
    };
 };
  
@@ -141,6 +151,7 @@ connection.onerror = function (err) {
 function send(message) {
    if (connectedUser) {
       message.name = connectedUser;
+
    }
     
    connection.send(JSON.stringify(message));
@@ -166,6 +177,7 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
          alert("An error has occurred.");
       });
    }
+   console.log("connection is established");
 });
  
 //when somebody wants to call us
@@ -221,5 +233,5 @@ sendMsgBtn.addEventListener("click", function (event) {
    console.log("send message");
    var val = msgInput.value;
    dataChannel.send(val);
-   msgInput.value = "";
+  // msgInput.value = ""; // to clear the box after message send 
 });
