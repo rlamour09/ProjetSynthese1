@@ -8,7 +8,7 @@
 Si toutefois il y a des erreurs suivre les instructions au point 2 ci-dessous
 
 ## 2- Ouvrir command prompt (CMD) puis se placer dans la racine du dossier server 
-###En suite installer les dépendances; voici les commandes:
+## En suite installer les dépendances; voici les commandes:
 * npm install express
 * npm install websocket
 * npm install ws 
