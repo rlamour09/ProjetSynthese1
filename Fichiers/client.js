@@ -8,7 +8,7 @@ var msgInput = document.querySelector('#msgInput');
 var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var connectedUser, myConnection, dataChannel;
 var chatArea = document.querySelector('#chatarea');
-
+var partager = document.querySelector('#partager');
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
@@ -60,7 +60,7 @@ tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (name, messenger)');
 // create the data base to save receive messages
 
 //var savedb = openDatabase('messageColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
-  
+ /* 
    function saveData() {  
        
    db.transaction(function (tx) {
@@ -71,7 +71,9 @@ tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (name, messenger)');
          })
                  
        }
+       */
 //End of database
+
 
 //handle messages from the server
 connection.onmessage = function (message) {
@@ -81,6 +83,7 @@ connection.onmessage = function (message) {
    switch(data.type) {
       case "login":
          onLogin(data.success);
+         // console.log("Oui alllooooooooo");
          break;
       case "offer":
          onOffer(data.offer, data.name);
@@ -94,7 +97,8 @@ connection.onmessage = function (message) {
       default:
          break;
    }
-   console.log("");
+  
+  
 };
  
 //when a user logs in
@@ -133,10 +137,10 @@ function onLogin(success) {
         
    }
 
-    //when we receive a message from the other peer, display it on the screen
-    dataChannel.onmessage = function (event) {
-      chatArea.innerHTML += connectedUser + ": " + event.data; //+ "<br />";
-   };
+// user online or connected
+
+
+
 };
  
 connection.onopen = function () {
@@ -222,7 +226,15 @@ function openDataChannel() {
    };
     
    dataChannel.onmessage = function (event) {
-      console.log("Got message:", event.data);
+     // console.log("Got message:", event.data);
+
+       //when we receive a message from the other peer, display it on the screen
+ 
+      chatArea.innerHTML += connectedUser + ": " + event.data + "<button type='button' onclick='adopter()'>Adopter</button><br/>";
+        
+  
+  
+          
    };  
 }
   //when a user clicks the send message button
@@ -232,6 +244,10 @@ function openDataChannel() {
 sendMsgBtn.addEventListener("click", function (event) {
    console.log("send message");
    var val = msgInput.value;
+   var val1= msgInput.value;
+  //chatArea.innerHTML += name + ": " + val + "<button type='button' onclick='doClose()' > adopter </button><br/>";
+   partager.innerHTML += name + ": " + val1+ "<br/>";
    dataChannel.send(val);
-  // msgInput.value = ""; // to clear the box after message send 
+  // dataChannel.send(val1);
+  
 });
