@@ -48,11 +48,12 @@ var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024);
 function insertData (){ 
 
 db.transaction(function (tx) { 
-tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,PRIMARY KEY(Id_Note,Auteur))'); 
+tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
     idParagraphe++;
     var txt1=document.getElementById("loginInput").value;
     var txt2=document.getElementById("msgInput").value;
-    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'")'); 
+    var d =Date();
+    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'","'+d+'")'); 
  
          })
 
