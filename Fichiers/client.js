@@ -9,7 +9,7 @@ var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var connectedUser, myConnection, dataChannel;
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
-var IdParagraphe=0;
+var idParagraphe=0;
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
@@ -49,11 +49,10 @@ function insertData (){
 
 db.transaction(function (tx) { 
 tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,PRIMARY KEY(Id_Note,Auteur))'); 
-IdParagraphe=IdParagraphe+1;
-var id =IdParagraphe;
+    idParagraphe++;
     var txt1=document.getElementById("loginInput").value;
     var txt2=document.getElementById("msgInput").value;
-    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+id+'","'+txt1+'", "'+txt2+'")'); 
+    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'")'); 
  
          })
 
