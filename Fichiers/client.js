@@ -1,4 +1,5 @@
-var connection = new WebSocket('ws://localhost:9090');
+var connection = new WebSocket('ws://192.168.0.17:9090');
+//var connection = new WebSocket('ws://localhost:9090');
 var name = "";
 var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn');
@@ -9,6 +10,7 @@ var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var connectedUser, myConnection, dataChannel;
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
+var IdParagraphe=0;
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
@@ -23,12 +25,10 @@ loginBtn.addEventListener("click", function(event) {
 /*
 // create the data base to save send messages
 function errorHandler(tx, error){
-
    console.log('Oops error was '+error.message+'(code '+error.code+')');
    return true;
 }
 var db= openDatabase('send_message', '1.0', 'Send message to another peer', 5*1024*1024 );
-
    db.transaction(function(tx){
       var sql='CREATE TABLE IF NOT EXISTS Document (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,message text)';
       tx.executeSql(sql,undefined,function(){
@@ -38,7 +38,6 @@ var db= openDatabase('send_message', '1.0', 'Send message to another peer', 5*10
       })
      
    });
-
 */
 
 // create the database to save send messages
@@ -47,11 +46,13 @@ var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024);
 function insertData (){ 
 
 db.transaction(function (tx) { 
-tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (name, messenger)'); 
-    
+//tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
+tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,PRIMARY KEY(Id_Note,Auteur))'); 
+IdParagraphe=IdParagraphe+1;
+var id =IdParagraphe;
     var txt1=document.getElementById("loginInput").value;
     var txt2=document.getElementById("msgInput").value;
-    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+txt1+'", "'+txt2+'")'); 
+    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+id+'","'+txt1+'", "'+txt2+'")'); 
  
          })
 
