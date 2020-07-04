@@ -1,5 +1,4 @@
-var connection = new WebSocket('ws://192.168.0.17:9090');
-//var connection = new WebSocket('ws://localhost:9090');
+var connection = new WebSocket('ws://localhost:9090');
 var name = "";
 var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn');
@@ -10,11 +9,7 @@ var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var connectedUser, myConnection, dataChannel;
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
-<<<<<<< HEAD
-var IdParagraphe=0;
-=======
 var idParagraphe=0;
->>>>>>> 3d2a947ec8f89550f4137b110a28b00efd678329
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
@@ -26,23 +21,6 @@ loginBtn.addEventListener("click", function(event) {
    }
 });
  
-/*
-// create the data base to save send messages
-function errorHandler(tx, error){
-   console.log('Oops error was '+error.message+'(code '+error.code+')');
-   return true;
-}
-var db= openDatabase('send_message', '1.0', 'Send message to another peer', 5*1024*1024 );
-   db.transaction(function(tx){
-      var sql='CREATE TABLE IF NOT EXISTS Document (id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,message text)';
-      tx.executeSql(sql,undefined,function(){
-         alert("Table is created successfully");
-      },function(){
-         alert("Table is already being created");
-      })
-     
-   });
-*/
 
 // create the database to save send messages
 var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
@@ -50,42 +28,18 @@ var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024);
 function insertData (){ 
 
 db.transaction(function (tx) { 
-<<<<<<< HEAD
-//tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
-tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,PRIMARY KEY(Id_Note,Auteur))'); 
-IdParagraphe=IdParagraphe+1;
-var id =IdParagraphe;
-    var txt1=document.getElementById("loginInput").value;
-    var txt2=document.getElementById("msgInput").value;
-    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+id+'","'+txt1+'", "'+txt2+'")'); 
-=======
 tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
     idParagraphe++;
     var txt1=document.getElementById("loginInput").value;
     var txt2=document.getElementById("msgInput").value;
     var d =Date();
     tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'","'+d+'")'); 
->>>>>>> 3d2a947ec8f89550f4137b110a28b00efd678329
  
          })
 
                 
          }
-// create the data base to save receive messages
 
-//var savedb = openDatabase('messageColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
- /* 
-   function saveData() {  
-       
-   db.transaction(function (tx) {
-   tx.executeSql('CREATE TABLE IF NOT EXISTS ReceiveNote (message)');
-   var text=document.getElementById("chatarea").value;
-   tx.executeSql('INSERT INTO ReceiveNote VALUES ("'+text+'")');
-     
-         })
-                 
-       }
-       */
 //End of database
 
 

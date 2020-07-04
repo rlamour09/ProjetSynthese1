@@ -34,14 +34,16 @@
 
     <!-- Cette endroit est pour afficher les utilisateurs connectés  -->
     <div class = "row" style = "margin: 30px 2px -10px">
-           <div class = "panel-heading"> Gestion des utilisateurs connectés</div>
-           <div id = "utilisateurs" type = "text" ></div>
+      <h3><i class="fas fa-users"></i> Users</h3>
+      <ul id="users"></ul>
+          <!-- <div id = "utilisateurs" type = "text" ></div> -->
     </div>
 
      <!-- les paragraphes partager et sauvegarder a la base de données  -->
    
      <div class = "row" style = "margin: 30px 2px -10px">
-      <div class = "panel-heading">Paragraphe partager et sauvegarder</div>
+      <div class = "panel-heading"><B>Paragraphe partager et sauvegarder</B></div>
+      <br>
       <div id = "partager" type = "text" ></div>
    </div>
 
@@ -51,27 +53,9 @@
          <textarea row="5" cols="50" type = "text" id = "msgInput"> </textarea>
          <button id = "sendMsgBtn" style="color:green;display:block;" onclick="insertData ()">Partager</button>
          </div>
-
-
-
-      <!-- -->
-         <!--
-      <div class = "row"  style = "margin: 30px 2px -10px">
-          <div class = "col-md-4 col-md-offset-4 text-center">
-            <div class = "panel panel-primary">
-                                  <div class = "panel-heading"> Messages Partagés</div>
-               <div id = "chatarea" type = "text" ></div>
-               
-               <button id = "saveMsgBtn" style="color:green;display:block" onclick="saveData()">Save</button>
-               -->
-            <!--  </div>
-         </div> 
-           
-      </div>
-   -->  
-
+   <!-- Messages recus par l'autre utilisateur -->
       <div class = "row" style = "margin: 30px 2px -10px">
-         <div class = "panel-heading">Notes Recus</div>
+         <div class = "panel-heading"><B>Notes Recus</B></div>
          <div id = "chatarea" type = "text" ></div>
       </div>
 
