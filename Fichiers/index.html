@@ -16,7 +16,10 @@
 
         <header class="join-header">
                 <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
-        </header>
+      </header>
+
+      <a style = "margin:50px 10px -10" href="displayNotes.html" target="_blank" onclick="alldetails()">Afficher les notes </a>
+       <!-- <button style = "margin:50px 10px -10" onclick="alldetails()">Afficher les notes  </button>-->
 
       <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Prise de note</h1>
          <!-- Ici les entrees pour le loggin et pour etablir la connection avec les autres utilisateurs -->
@@ -59,7 +62,28 @@
          <div id = "chatarea" type = "text" ></div>
       </div>
 
-        <!-- -->
+     <!-- Display data from the database -->
+     <br /><br /><br /> 
+      <h2 >Affichage des notes</h2> 
+      <br /> 
+     
+      <table id="displayData" cellpadding="10px" cellspacing="0" border="1">  
+        <tr style="background-color:black;color:white;font-size:18px;">  
+            <td >  
+                ID  
+            </td>  
+            <td >  
+                Auteur  
+            </td>  
+            <td >  
+                Note  
+            </td>  
+            <td >  
+                Date  
+            </td>  
+        </tr>  
+      </table>  
+         
       <script src = "client.js"></script>
      </body>
     

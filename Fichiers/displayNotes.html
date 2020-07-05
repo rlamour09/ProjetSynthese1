@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang = "en">
+   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="text/javascript" src="client.js"></script>
+     <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+      integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+      crossorigin="anonymous"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <title>Collabo App</title>
+  </head>
+    
+    <body>
+
+        <header class="join-header">
+                <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
+                <a href="index.html" >Page Acceuille</a>
+        </header>
+
+      <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Affichage des notes </h1>
+
+      <!-- lien pour Affichage des notes pour effacement ou pour mettre à jour  -->
+       <button style = "margin:50px 10px -10" onclick="alldetails()">Click ici pour afficher les notes </button>
+
+
+      
+         <!-- Affichage des notes pour effacement ou pour mettre à jour  -->
+         <!-- <div id = "displayNotes" type = "text" ></div>-->
+         <table id="displayData" cellpadding="10px" cellspacing="0" border="1">  
+            <tr style="background-color:black;color:white;font-size:18px;">  
+                <td >  
+                    ID  
+                </td>  
+                <td >  
+                    Auteur  
+                </td>  
+                <td >  
+                    Note  
+                </td>  
+                <td >  
+                    Date  
+                </td>  
+            </tr>  
+          </table>  
+ <!-- 
+ Script test
+          <script src = "client.js">
+
+
+            var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
+            
+            function alldetails()  
+            {  
+                db.transaction(function (tx) {  
+                    tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
+                        var len = results.rows.length, i;  
+                        // document.getElementById("tblGrid").innerHTML = '';  
+                        //$("#tblGrid").find("tr:gt(0)").remove();  
+                        var str = '';  
+                        for (i = 0; i < len; i++) {  
+                            str += "<tr>";  
+                            str += "<td>" + results.rows.item(i).id + "</td>";  
+                            str += "<td>" + results.rows.item(i).auteur + "</td>";  
+                            str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
+                            str += "<td>" + results.rows.item(i).date + "</td>";  
+                            str += "</tr>";  
+                            document.getElementById("displayData").innerHTML += str;  
+                            str = '';  
+                        }  
+                    }, null);  
+                });  
+            
+            }  
+            
+                 </script>
+         -->
+     </body>
+
+    
+</html>

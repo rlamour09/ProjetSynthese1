@@ -9,7 +9,9 @@ var sendMsgBtn = document.querySelector('#sendMsgBtn');
 var connectedUser, myConnection, dataChannel;
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
-var idParagraphe=0;
+var displayData = document.querySelector('#displayData');
+
+
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
    name = loginInput.value;
@@ -21,8 +23,95 @@ loginBtn.addEventListener("click", function(event) {
    }
 });
  
+/////////// Test test test test test test  test test test /////////////////////////////////////////////////////////////////////////
+
+var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
+  
+function insertData (){ 
+
+db.transaction(function (tx) { 
+//tx.executeSql('DROP TABLE IF EXISTS testNote');
+tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" + 
+        "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+        "auteur TEXT, " +
+        "paragraphe TEXT, " +
+        "date TIMESTAMP DEFAULT(datetime('now', 'localtime')))"
+    );
+    var txt1=document.getElementById("loginInput").value;
+    var txt2=document.getElementById("msgInput").value;
+    //var d =Date();
+    tx.executeSql("INSERT INTO  testNote (auteur,paragraphe) VALUES(?,?)",[txt1,txt2]);
+ 
+         })
+
+                
+         }
+
+// Display data from the database 
+
+function alldetails()  
+{  
+    db.transaction(function (tx) {  
+        tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
+            var len = results.rows.length, i;  
+            // document.getElementById("tblGrid").innerHTML = '';  
+            //$("#tblGrid").find("tr:gt(0)").remove();  
+            var str = '';  
+            for (i = 0; i < len; i++) {  
+                str += "<tr>";  
+                str += "<td>" + results.rows.item(i).id + "</td>";  
+                str += "<td>" + results.rows.item(i).auteur + "</td>";  
+                str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
+                str += "<td>" + results.rows.item(i).date + "</td>";  
+                str += "</tr>";  
+                document.getElementById("displayData").innerHTML += str;  
+                str = '';  
+            }  
+        }, null);  
+    });  
+
+}  
+
+
+// Button adopter to save receive notes 
+
+function adopter (){ 
+
+   // db.transaction(function (tx) { 
+       
+    //tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
+    //tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
+        
+        //var txt1=document.getElementById("loginInput").value;
+        //var txt2=document.getElementById("msgInput").value;
+        var b = document.getElementById('chatarea').innerText;
+        document.getElementById('partager').innerHTML += b + "<br/>";
+       // dataChannel.send(val);
+       // tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'","'+d+'")'); 
+     
+         //    })
+    
+                    
+             }
+
+/*
+function displayResults(transaction, results) {
+   for (var i = 0; i < results.rows.length; i++) {
+     var item = results.rows.items(i);
+     $('#displayData').append('<li>' + item.firstName + ' ' + item.lastName + '</li>');
+   }
+ }
+ 
+ var db = openDatabase('library', '2.0', 'My library', 5 * 1024 * 1024);
+ db.transaction(function(tx) {
+     tx.executeSql("SELECT * FROM authors", [], displayResults)
+ });
+ */
+  
+/////////////////////////////////test test test test ///////////////////////////////////////////
 
 // create the database to save send messages
+/*
 var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
   
 function insertData (){ 
@@ -39,9 +128,11 @@ tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur,
 
                 
          }
+*/
 
+   
 //End of database
-
+//////////////////////////////////////////////////////////////////////////
 
 //handle messages from the server
 connection.onmessage = function (message) {
