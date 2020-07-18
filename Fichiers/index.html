@@ -18,7 +18,7 @@
                 <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
       </header>
 
-      <a style = "margin:50px 10px -10" href="displayNotes.html" target="_blank" onclick="alldetails()">Afficher les notes </a>
+      <a style = "margin:50px 10px -10" href="displayNotes.html" target="_blank" >Pour faire la gestion de tes notes cliquer ici </a>
        <!-- <button style = "margin:50px 10px -10" onclick="alldetails()">Afficher les notes  </button>-->
 
       <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Prise de note</h1>
@@ -47,7 +47,10 @@
      <div class = "row" style = "margin: 30px 2px -10px">
       <div class = "panel-heading"><B>Paragraphe partager et sauvegarder</B></div>
       <br>
-      <div id = "partager" type = "text" ></div>
+      <div >
+        <p id = "partager" type = "text"  style="color:rgb(82, 30, 6)"></p>
+        <p id = "partager1" type = "text"  style="color:rgb(204, 88, 5)"></p>
+      </div>
    </div>
 
      <!-- -->
@@ -59,31 +62,17 @@
    <!-- Messages recus par l'autre utilisateur -->
       <div class = "row" style = "margin: 30px 2px -10px">
          <div class = "panel-heading"><B>Notes Recus</B></div>
-         <div id = "chatarea" type = "text" ></div>
+            <p id = "chatarea" type = "text"  style="color:blue"></p>   
+         <!--
+            <table  id = "chatarea" type = "text"  style="color:blue" >  
+            <tbody>
+            </tbody>
+                      
+          </table>  
+        -->      
       </div>
 
-     <!-- Display data from the database -->
-     <br /><br /><br /> 
-      <h2 >Affichage des notes</h2> 
-      <br /> 
-     
-      <table id="displayData" cellpadding="10px" cellspacing="0" border="1">  
-        <tr style="background-color:black;color:white;font-size:18px;">  
-            <td >  
-                ID  
-            </td>  
-            <td >  
-                Auteur  
-            </td>  
-            <td >  
-                Note  
-            </td>  
-            <td >  
-                Date  
-            </td>  
-        </tr>  
-      </table>  
-         
+    
       <script src = "client.js"></script>
      </body>
     

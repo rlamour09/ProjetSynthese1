@@ -6,10 +6,14 @@ var otherUsernameInput = document.querySelector('#otherUsernameInput');
 var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn');
 var msgInput = document.querySelector('#msgInput');
 var sendMsgBtn = document.querySelector('#sendMsgBtn');
-var connectedUser, myConnection, dataChannel;
+var connectedUser=[];
+var myConnection =[]; 
+var dataChannel =[];
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
 var displayData = document.querySelector('#displayData');
+var i=0;
+var otherUsername;
 
 
 //when a user clicks the login button
@@ -23,7 +27,7 @@ loginBtn.addEventListener("click", function(event) {
    }
 });
  
-/////////// Test test test test test test  test test test /////////////////////////////////////////////////////////////////////////
+///////////////////Database/////////////////////////////////////////////////////////////////
 
 var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
   
@@ -47,90 +51,26 @@ tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" +
                 
          }
 
-// Display data from the database 
-
-function alldetails()  
-{  
-    db.transaction(function (tx) {  
-        tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
-            var len = results.rows.length, i;  
-            // document.getElementById("tblGrid").innerHTML = '';  
-            //$("#tblGrid").find("tr:gt(0)").remove();  
-            var str = '';  
-            for (i = 0; i < len; i++) {  
-                str += "<tr>";  
-                str += "<td>" + results.rows.item(i).id + "</td>";  
-                str += "<td>" + results.rows.item(i).auteur + "</td>";  
-                str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
-                str += "<td>" + results.rows.item(i).date + "</td>";  
-                str += "</tr>";  
-                document.getElementById("displayData").innerHTML += str;  
-                str = '';  
-            }  
-        }, null);  
-    });  
-
-}  
-
-
 // Button adopter to save receive notes 
 
 function adopter (){ 
 
-   // db.transaction(function (tx) { 
-       
-    //tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
+   db.transaction(function (tx) { 
+         //tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
     //tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
         
         //var txt1=document.getElementById("loginInput").value;
         //var txt2=document.getElementById("msgInput").value;
         var b = document.getElementById('chatarea').innerText;
-        document.getElementById('partager').innerHTML += b + "<br/>";
+        document.getElementById('partager1').innerText += b ;// bien
        // dataChannel.send(val);
-       // tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'","'+d+'")'); 
+       tx.executeSql("INSERT INTO  testNote (paragraphe) VALUES(?)",[b]);
      
-         //    })
+           })
     
                     
              }
 
-/*
-function displayResults(transaction, results) {
-   for (var i = 0; i < results.rows.length; i++) {
-     var item = results.rows.items(i);
-     $('#displayData').append('<li>' + item.firstName + ' ' + item.lastName + '</li>');
-   }
- }
- 
- var db = openDatabase('library', '2.0', 'My library', 5 * 1024 * 1024);
- db.transaction(function(tx) {
-     tx.executeSql("SELECT * FROM authors", [], displayResults)
- });
- */
-  
-/////////////////////////////////test test test test ///////////////////////////////////////////
-
-// create the database to save send messages
-/*
-var db = openDatabase('TextColab', '1.0', 'Test DB', 2 * 1024 * 1024); 
-  
-function insertData (){ 
-
-db.transaction(function (tx) { 
-tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
-    idParagraphe++;
-    var txt1=document.getElementById("loginInput").value;
-    var txt2=document.getElementById("msgInput").value;
-    var d =Date();
-    tx.executeSql('INSERT INTO  SendUserNote VALUES ("'+idParagraphe+'","'+txt1+'", "'+txt2+'","'+d+'")'); 
- 
-         })
-
-                
-         }
-*/
-
-   
 //End of database
 //////////////////////////////////////////////////////////////////////////
 
@@ -162,6 +102,7 @@ connection.onmessage = function (message) {
  
 //when a user logs in
 function onLogin(success) {
+ 
 
    if (success === false) {
       alert("oops...try a different username");
@@ -172,27 +113,97 @@ function onLogin(success) {
       var configuration = {
          "iceServers": [{ "url": "stun:stun.1.google.com:19302" }]
       };
-        
-      myConnection = new webkitRTCPeerConnection(configuration, {
+        /*
+      myConnection= new webkitRTCPeerConnection(configuration, {
          optional: [{RtpDataChannels: true}]
+
+
+ 
       });
-        
+      */
+     /*
+      myConnection.push( myConnection= new webkitRTCPeerConnection(configuration, {
+         optional: [{RtpDataChannels: true}]
+
+
+ 
+      }));
+     */
+
+/*
+    myConnection[0]= new webkitRTCPeerConnection(configuration, {
+      optional: [{RtpDataChannels: true}]
+   });
+   myConnection[1]= new webkitRTCPeerConnection(configuration, {
+      optional: [{RtpDataChannels: true}]
+
+   });
+*/
+   
+myConnection[0]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[1]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[2]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[3]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[4]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[5]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[6]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+   
+myConnection[7]= new webkitRTCPeerConnection(configuration, {
+   optional: [{RtpDataChannels: true}]
+
+});
+
+     for (let i = 0; i < myConnection.length; i++) {
+    
       console.log("RTCPeerConnection object was created");
-      console.log(myConnection);
+      console.log(myConnection[0]);
  
       //setup ice handling
       //when the browser finds an ice candidate we send it to another peer
-      myConnection.onicecandidate = function (event) {
-        
+      myConnection[i].onicecandidate = function (event) {
+        otherUsername = otherUsernameInput.value;// test
+        otherUsername=connectedUser[i]///ok?
          if (event.candidate) {
             send({
+              name:otherUsername, //ajout ?
                type: "candidate",
                candidate: event.candidate
             });
          }
-      };
-      
-      openDataChannel();
+      }
+  
+        
+        
+     };
+
+        openDataChannel();
         
    }
 
@@ -211,23 +222,31 @@ connection.onerror = function (err) {
 };
  
 // Alias for sending messages in JSON format
+
+
 function send(message) {
-   if (connectedUser) {
-      message.name = connectedUser;
+   for (let i= 0; i < connectedUser.length; i++) {
+     if (otherUsername===connectedUser[i]){
+   //if (connectedUser[i]) {
+      message.name = connectedUser[i];
 
    }
-    
+}
    connection.send(JSON.stringify(message));
 };
 //setup a peer connection with another user
 connectToOtherUsernameBtn.addEventListener("click", function () {
  
-   var otherUsername = otherUsernameInput.value;
-   connectedUser = otherUsername;
-    
+   otherUsername = otherUsernameInput.value;
+   connectedUser.push(otherUsername) ;
+   
+ 
    if (otherUsername.length > 0) {
+      for (let i = 0; i < myConnection.length; i++) {
+         if(otherUsername===connectedUser[i]){ 
+
       //make an offer
-      myConnection.createOffer(function (offer) {
+      myConnection[i].createOffer(function (offer) {
          console.log();
             
          send({
@@ -235,66 +254,99 @@ connectToOtherUsernameBtn.addEventListener("click", function () {
             offer: offer
          });
             
-         myConnection.setLocalDescription(offer);
+         myConnection[i].setLocalDescription(offer);
       }, function (error) {
          alert("An error has occurred.");
       });
    }
    console.log("connection is established");
-});
+}
+}});
  
 //when somebody wants to call us
 function onOffer(offer, name) {
-   connectedUser = name;
-   myConnection.setRemoteDescription(new RTCSessionDescription(offer));
+   for (let i= 0; i <  myConnection.length; i++) {
+      if (otherUsername===connectedUser[i]){
+   connectedUser[i] = name;
+
+   console.log("On offfer"+name)
+   myConnection[i] .setRemoteDescription(new RTCSessionDescription(offer));
     
-   myConnection.createAnswer(function (answer) {
-      myConnection.setLocalDescription(answer);
-        
+   myConnection[i].createAnswer(function (answer) {
+      myConnection[i].setLocalDescription(answer);
+      console.log(" local desc "+answer)
       send({
          type: "answer",
-         answer: answer
+         answer: answer,
+         name // ajout ça marche 
       });
         
    }, function (error) {
       alert("oops...error");
    });
+      };
+
+};
 }
+
+
 
 //when another user answers to our offer
 function onAnswer(answer) {
-   myConnection.setRemoteDescription(new RTCSessionDescription(answer));
-}
+   for (let i= 0; i <  myConnection.length; i++) {
+     // 
+      if (otherUsername===connectedUser[i] ){// ajouter  (message.name!=connectedUser[i])
+        console.log("answer to offert" +answer+"quel nom"+otherUsername)
+   
+   myConnection[i].setRemoteDescription(new RTCSessionDescription(answer));
+   console.log("answer to offert" +answer)
+   
+}}}
  
 //when we got ice candidate from another user
 function onCandidate(candidate) {
-   myConnection.addIceCandidate(new RTCIceCandidate(candidate));
+   for (let i= 0; i <  myConnection.length; i++) {
+      if (otherUsername===connectedUser[i]){
+        // console.log("ice candidate" +answer+"quel nom"+otherUsername)
+   
+   myConnection[i].addIceCandidate(new RTCIceCandidate(candidate));
+   //console.log("conaection name" +candidate+"quel nom"+otherUsername)
+   
+       
+
+     } 
+
+   }
+
 }
 
 //creating data channel
 function openDataChannel() {
 
-   var dataChannelOptions = {
+   for (let i = 0; i < myConnection.length; i++) {
+      
+     var dataChannelOptions = {
       reliable:true
    };
     
-   dataChannel = myConnection.createDataChannel("myDataChannel", dataChannelOptions);
+   dataChannel[i] =  myConnection[i].createDataChannel("myDataChannel", dataChannelOptions);
     
-   dataChannel.onerror = function (error) {
+   dataChannel[i].onerror = function (error) {
       console.log("Error:", error);
    };
     
-   dataChannel.onmessage = function (event) {
+   dataChannel[i].onmessage = function (event) {
      // console.log("Got message:", event.data);
 
        //when we receive a message from the other peer, display it on the screen
  
-      chatArea.innerHTML += connectedUser + ": " + event.data + "<button type='button' onclick='adopter()'>Adopter</button><br/>";
+      chatArea.innerHTML += event.data + "<button type='button' onclick='adopter()'>Adopter</button><br/>";
         
   
-  
-          
-   };  
+   }
+
+       
+   };
 }
   //when a user clicks the send message button
 
@@ -306,7 +358,7 @@ sendMsgBtn.addEventListener("click", function (event) {
    var val1= msgInput.value;
   //chatArea.innerHTML += name + ": " + val + "<button type='button' onclick='doClose()' > adopter </button><br/>";
    partager.innerHTML += name + ": " + val1+ "<br/>";
-   dataChannel.send(val);
+   dataChannel[i].send(val);
   // dataChannel.send(val1);
   
 });

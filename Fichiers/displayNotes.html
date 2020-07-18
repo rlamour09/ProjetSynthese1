@@ -3,7 +3,194 @@
    <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
     <script type="text/javascript" src="client.js"></script>
+
+      
+   <script>
+    var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
+  
+  function Insert(){ 
+  
+  db.transaction(function (tx) { 
+  //tx.executeSql('DROP TABLE IF EXISTS testNote');
+  tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" + 
+          "id unique, " +
+          "auteur TEXT, " +
+          "paragraphe TEXT, " +
+          "date TIMESTAMP DEFAULT(datetime('now', 'localtime')))"
+      );
+      var id = document.getElementById("tbID").value;  
+      var txt1=document.getElementById("loginInput").value;
+      var txt2=document.getElementById("msgInput").value;
+      //var d =Date();
+      //tx.executeSql("INSERT INTO  testNote (auteur,paragraphe) VALUES(?,?)",[txt1,txt2]);
+      tx.executeSql('insert into testNote(id,auteur, paragraphe) values(' + id + ',"' + txt1 + '","' + txt2 + '")'); 
+           });
+  
+           alldetails();     
+           }
+
+        //// del fonction
+
+           function del() {  
+            var id = document.getElementById("ddlid").value;  
+          //  alert(id);  
+            db.transaction(function (tx) {  
+                tx.executeSql('delete from testNote where id=' + id + '');  
+            });  
+  
+            empidbind();  
+  
+            alldetails();  
+        } 
+        
+        //// my function ()
+        function myFunction()  
+        {  
+            var id = document.getElementById("ddlid").value;  
+  
+            db.transaction(function (tx) {  
+                tx.executeSql('SELECT * from testNote where id=' + id + '', [], function (tx, results)  
+                {  
+                    document.getElementById("loginInput").value = results.rows.item(0).auteur;  
+                    document.getElementById("msgInput").value = results.rows.item(0).paragraphe;  
+                    //document.getElementById("tbLdept").value = results.rows.item(0).did;  
+                    
+                      
+                }, null);  
+            });  
+             
+        }  
+// showdel pour montrer les bouttons
+
+        function showdel() {  
+  
+  empidbind();  
+
+  $('#tdorginal').hide();  
+  $('#tdid').show();  
+  $('#btnupdate').hide();  
+  $('#btnInsert').hide();  
+  $('#btndel').show();  
+  $('#btninsertshw').show();  
+  $('#btnupdateshw').show();  
+  $('#btndeleteshw').hide();  
+  ////////////  
+  $('#rowName').hide();  
+  $('#rowLocation').hide();  
+  //$('#rowdept').hide();  
+}  
+
+/// showwin()
+
+
+function showin()  
+        {  
+            $('#tdid').hide();  
+            $('#tdorginal').show();  
+            
+            $('#btnupdate').hide();  
+            $('#btnInsert').show();  
+            $('#btndel').hide();  
+            $('#btninsertshw').hide();  
+            $('#btnupdateshw').show();  
+            $('#btndeleteshw').show();  
+            ////////////  
+            $('#rowName').show();  
+            $('#rowLocation').show();  
+           // $('#rowdept').show();  
+  
+            /////////////  
+          document.getElementById("tbID").value='';  
+          document.getElementById("loginInput").value='';
+          document.getElementById("msgInput").value='';
+         // document.getElementById("tbLdept").value='1';  
+  
+               empidbind();  
+        }  
+
+// empidbind
+ 
+function empidbind()  
+        {  
+            db.transaction(function (tx) {  
+                tx.executeSql('SELECT * from testNote', [], function (tx, results) {  
+                    var len = results.rows.length, i;  
+                    document.getElementById("ddlid").innerHTML = '';  
+                    var str = '';  
+                    for (i = 0; i < len; i++) {  
+                        str += "<option value=" + results.rows.item(i).id + ">" + results.rows.item(i).id + "</option>";  
+                        document.getElementById("ddlid").innerHTML += str;  
+                        str = '';  
+                    }  
+                }, null);  
+            });  
+  
+        }  
+
+        // show update button 
+  function showupdte()  
+        {  
+            empidbind();  
+  
+  
+            $('#tdorginal').hide();  
+            $('#tdid').show();  
+            $('#btnupdate').show();  
+            $('#btnInsert').hide();  
+            $('#btndel').hide();  
+            $('#btninsertshw').show();  
+            $('#btnupdateshw').hide();  
+            $('#btndeleteshw').show();  
+            $('#rowName').show();  
+            $('#rowLocation').show();  
+           // $('#rowdept').show();  
+              
+        }  
+  // update 
+  
+       function update() {  
+          var id = document.getElementById("ddlid").value;  
+            var txt1=document.getElementById("loginInput").value;
+            var txt2=document.getElementById("msgInput").value;
+            db.transaction(function (tx) {  
+                //tx.executeSql('update testNote set auteur="' + txt1 + '"paragraphe="' + txt2 + '" where id= ' + id + ''); 
+                tx.executeSql('update testNote set auteur=?, where auteur= ?',[txt1,txt2]); 
+            });  
+           
+            alldetails();  
+        }  
+
+        // Display data from the database 
+
+function alldetails()  
+{  
+    db.transaction(function (tx) {  
+        tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
+            var len = results.rows.length, i;  
+            // document.getElementById("tblGrid").innerHTML = '';  
+           // $("#displayData").find("tr:gt(0)").remove();  
+            var str = '';  
+            for (i = 0; i < len; i++) {  
+                str += "<tr>";  
+                str += "<td>" + results.rows.item(i).id + "</td>";  
+                str += "<td>" + results.rows.item(i).auteur + "</td>";  
+                str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
+                str += "<td>" + results.rows.item(i).date + "</td>";  
+                str += "</tr>";  
+                document.getElementById("displayData").innerHTML += str;  
+                str = '';  
+            }  
+        }, null); 
+        
+      //  updte()
+    });  
+
+}  
+    
+    </script>
+
      <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
@@ -20,15 +207,44 @@
                 <a href="index.html" >Page Acceuille</a>
         </header>
 
-      <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Affichage des notes </h1>
-
+      <h2><i class="fas " style = "margin: 30px 2px -20px"></i>Affichage des notes de la base de donnée </h2>
+      <br/> 
       <!-- lien pour Affichage des notes pour effacement ou pour mettre à jour  -->
        <button style = "margin:50px 10px -10" onclick="alldetails()">Click ici pour afficher les notes </button>
 
-
-      
-         <!-- Affichage des notes pour effacement ou pour mettre à jour  -->
+        <!-- Affichage des notes pour effacement ou pour mettre à jour  -->
          <!-- <div id = "displayNotes" type = "text" ></div>-->
+    <br/><br/>
+    <table id="tblinsert">  
+        <tr>  
+            <td>ID:</td>  
+            <td id="tdorginal"><input type="text" id="tbID" /><span style="color:red">*ID must be unique</span></td>  
+            <td id="tdid" style="display:none">  
+                <select id="ddlid" onchange="myFunction()"></select>  
+            </td>  
+        </tr>
+        
+        <tr id="rowName">  
+            <td>Login:</td>  
+            <td><input type = "text" id = "loginInput" /></td>  
+
+        </tr>  
+        <tr id="rowLocation">  
+            <td>Notes:</td>  
+            <td><textarea row="5" cols="50" type = "text" id = "msgInput"> </textarea></td>  
+        </tr>  
+    </table>
+    <br/><br/>  
+    <button id="btnInsert" onclick="Insert()" style="color:green;display:block">Save</button>  
+    <button id="btnupdate" onclick="update()" style="color:blue;display:none">Update</button>  
+    <button id="btndel" onclick="del()" style="color:red;display:none">Delete</button>  
+      
+    <br /><br />  
+    <button id="btnupdateshw" onclick="showupdte()" style="color:red">update notes details</button>  
+    <button id="btndeleteshw" onclick="showdel()" style="color:blue">Delete notes details</button>  
+    <button id="btninsertshw" onclick="showin()" style="color:green;display:none">save notes details</button>  
+    <br /><br />  
+        
          <table id="displayData" cellpadding="10px" cellspacing="0" border="1">  
             <tr style="background-color:black;color:white;font-size:18px;">  
                 <td >  
@@ -43,40 +259,12 @@
                 <td >  
                     Date  
                 </td>  
-            </tr>  
+              </tr>  
           </table>  
- <!-- 
- Script test
-          <script src = "client.js">
-
-
-            var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
-            
-            function alldetails()  
-            {  
-                db.transaction(function (tx) {  
-                    tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
-                        var len = results.rows.length, i;  
-                        // document.getElementById("tblGrid").innerHTML = '';  
-                        //$("#tblGrid").find("tr:gt(0)").remove();  
-                        var str = '';  
-                        for (i = 0; i < len; i++) {  
-                            str += "<tr>";  
-                            str += "<td>" + results.rows.item(i).id + "</td>";  
-                            str += "<td>" + results.rows.item(i).auteur + "</td>";  
-                            str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
-                            str += "<td>" + results.rows.item(i).date + "</td>";  
-                            str += "</tr>";  
-                            document.getElementById("displayData").innerHTML += str;  
-                            str = '';  
-                        }  
-                    }, null);  
-                });  
-            
-            }  
-            
-                 </script>
-         -->
+  
+      <!-- Script test
+ <script src = "client.js"></script>-->
+         
      </body>
 
     
