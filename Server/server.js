@@ -5,7 +5,14 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({port: 9090}); 
 console.log("Server runing on localhost:9090");
 //all connected to the server users 
-var users = {};
+var users = [];
+
+// for broadcasting Events like users
+wss.broadcast = function(data) {
+   wss.clients.forEach(client => {
+      client.send(data);
+   })
+ };
 
 //when a user connects to our sever 
 wss.on('connection', function(connection) {
@@ -32,88 +39,44 @@ wss.on('connection', function(connection) {
             console.log("User logged as:", data.name); 
 				
             //if anyone is logged in with this username then refuse 
-            if(users[data.name]) { 
+            if(users.includes(data.name)) { 
+               // always send users, so we can have updated users list
                sendTo(connection, { 
                   type: "login", 
-                  success: false 
+                  success: false
                }); 
-            } else { 
-               //save user connection on the server 
-               users[data.name] = connection; 
-               connection.name = data.name; 
-					
+            } else {
+               // set the connection name
+               connection.id = data.name 
+               //save user connection on the server by pushing to array
+               users.push(data.name)
+					// always send users, so we can have updated users list
                sendTo(connection, { 
                   type: "login", 
-                  success: true 
+                  success: true
                }); 
             } 
-				
+            wss.broadcast(JSON.stringify({
+               type: "usersList",
+               users
+            }))
             break; 
-				
-         case "offer": 
-            //for ex. UserA wants to call UserB 
-            console.log("Sending offer to: ", data.name); 
-				
-            //if UserB exists then send him offer details 
-            var conn = users[data.name];
-				
-            if(conn != null) { 
-               //setting that UserA connected with UserB 
-               connection.otherName = data.name; 
-					
-               sendTo(conn, { 
-                  type: "offer", 
-                  offer: data.offer, 
-                  name: connection.name 
-               }); 
-            } 
-				
-            break;  
-				
-         case "answer": 
-            console.log("Sending answer to: ", data.name); 
-            //for ex. UserB answers UserA 
-            var conn = users[data.name]; 
-				
-            if(conn != null) { 
-               connection.otherName = data.name; 
-               sendTo(conn, { 
-                  type: "answer", 
-                  answer: data.answer 
-               }); 
-            } 
-				
-            break;  
-				
-         case "candidate": 
-            console.log("Sending candidate to:",data.name); 
-            var conn = users[data.name];  
-				
-            if(conn != null) { 
-               sendTo(conn, { 
-                  type: "candidate", 
-                  candidate: data.candidate 
-                  //console.log()
-               });
-            } 
-				
-            break;  
-				
-         case "leave": 
-            console.log("disconnecting from:",data.name); 
-            var conn = users[data.name]; 
-            conn.otherName = null; 
-				
-            //notify the other user so he can disconnect his peer connection 
-            if(conn != null) { 
-               sendTo(conn, { 
-                  type: "leave" 
-               }); 
-            }  
-				
-            break;  
+         case "RTCsignal": 
+            let con;
+            wss.clients.forEach(client => {
+               if(client.id == data.to){
+                  con = client;
+               }
+            })
+            if(con){
+               sendTo(con, data); 
+            }else{
+               console.log("could not find client connected")
+            }
+            break;
 				
          default: 
+            console.log()
             sendTo(connection, { 
                type: "error", 
                message: "Command not found: " + data.type 
@@ -128,25 +91,22 @@ wss.on('connection', function(connection) {
    //when user exits, for example closes a browser window 
    //this may help if we are still in "offer","answer" or "candidate" state 
    connection.on("close", function() { 
-	
-      if(connection.name) { 
-      delete users[connection.name]; 
-		
-         if(connection.otherName) { 
-            console.log(connection.otherName,"is disconnected now connect again!");
-            var conn = users[connection.otherName]; 
-            conn.otherName = null;  
-				
-            if(conn != null) { 
-               sendTo(conn, { 
-                  type: "leave" 
-               });
-            }  
-         } 
-      } 
+
+      // user has left, delete user
+      const index = users.indexOf(connection.id);
+      if (index > -1) {
+         users.splice(index, 1);
+      }
+      
+      // rebroadcast users list
+      wss.broadcast(JSON.stringify({
+         type: "usersList",
+         users
+      }))
+
    });  
 	
-   connection.send("Hello world"); 
+   connection.send(JSON.stringify({message: "Hello world"})); 
 	
 });  
 
