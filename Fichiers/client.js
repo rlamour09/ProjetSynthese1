@@ -113,7 +113,7 @@ tx.executeSql("CREATE TABLE IF NOT EXISTS textNote(" +
 
 function adopter (owner, message){ 
 
-   document.getElementById('partager1').innerHTML += "<span style='color: red;'>" + message + "</span><br/>"; ;// bien
+   document.getElementById('partager1').innerHTML += "<span style='color: red;'>" + message + "</span><br/>"+"<hr>"; ;// bien
    insertData(owner, message)
 
 }
@@ -244,7 +244,7 @@ function send(message) {
 };
 
 function receiveMessage(user, message){
-   chatArea.innerHTML += user + ": " + message+ `<button onclick="adopter('${user}','${message}')">adopt</button><br/>`;
+   chatArea.innerHTML += user + ": " + message+ `<button onclick="adopter('${user}','${message}')">adopt</button><br/>`+"<hr>";
 }
  
  //when a user clicks the send message button
@@ -253,7 +253,7 @@ function receiveMessage(user, message){
    console.log("send message");
    var val1= msgInput.value;
    if(val1){
-      partager.innerHTML += val1+ "<br/>";
+      partager.innerHTML += val1+ "<br/>"+"<hr>";
       insertData(name, val1);
       // get the keys of all users currently connected to
       var usersTosend = Object.keys(connectedUsers);
