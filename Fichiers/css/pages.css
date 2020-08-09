@@ -139,11 +139,17 @@ label {
 .partager{
 	max-width: 850px;
 	margin: 20px auto;
-	overflow:hidden;
+	/*overflow:hidden;*/
+	resize: vertical;
+	word-wrap: break-word;
+
+	
 }
 
 .notesRecus{
 	max-width: 850px;
 	margin: 20px auto;
 	overflow:hidden;
+	resize: vertical;
+	word-wrap: break-word;
 }
