@@ -2,19 +2,81 @@ var connection = new WebSocket('ws://localhost:9090');
 var name = "";
 var loginInput = document.querySelector('#loginInput');
 var loginBtn = document.querySelector('#loginBtn');
-var otherUsernameInput = document.querySelector('#otherUsernameInput');
-var connectToOtherUsernameBtn = document.querySelector('#connectToOtherUsernameBtn');
 var msgInput = document.querySelector('#msgInput');
 var sendMsgBtn = document.querySelector('#sendMsgBtn');
-var connectedUser=[];
-var myConnection =[]; 
-var dataChannel =[];
+var connectedUsers = {};
+var onlineUsers; 
 var chatArea = document.querySelector('#chatarea');
 var partager = document.querySelector('#partager');
-var displayData = document.querySelector('#displayData');
-var i=0;
-var otherUsername;
 
+// connection class is a helper class around simplePeer.js and it's exposed methods 
+class Connection {
+   constructor(remoteClient, initiator) {
+       console.log(`Opening connection to ${remoteClient}`);
+       this._remoteClient = remoteClient;
+       this.isConnected = false;
+       this._p2pConnection = new SimplePeer({
+           initiator: initiator,
+           trickle: false,
+       });
+       this._p2pConnection.on('signal', this._onSignal.bind(this));
+       this._p2pConnection.on('error', this._onError.bind(this));
+       this._p2pConnection.on('connect', this._onConnect.bind(this));
+       this._p2pConnection.on('close', this._onClose.bind(this));
+       this._p2pConnection.on('data', this._onData.bind(this));
+   }
+
+
+   // method callls the peers destroy method to destroy the connectopn
+   destroy(){
+      this._p2pConnection.destroy();
+   }
+
+   // methiod that handles the signal -> offer, answer, ice
+   handleSignal(signal) {
+       this._p2pConnection.signal(signal);
+   }
+
+   // send message over datachannel
+   send(msg) {
+       this._p2pConnection.send(msg);
+   }
+
+   // function called when it wants to send a signal
+   // bind to your signalling method here. Websocket, socket.io e.t.c
+   _onSignal(signal) {
+
+      const signalData = {
+         from: name,
+         signal: signal,
+         to: this._remoteClient,
+         type: "RTCsignal"
+      }
+      connection.send(JSON.stringify(signalData))
+   }
+
+   _onConnect() {
+       this.isConnected = true;
+       console.log('connected to ' + this._remoteClient);
+   }
+
+   // when connection is closed
+   // call the renderusers list, so we can see the update
+   _onClose() {
+       console.log(`connection to ${this._remoteClient} closed`);
+       delete connectedUsers[this._remoteClient];
+       renderUsers();
+   }
+
+   // when this peer recieves a message via dataChannel
+   _onData(data) {
+       receiveMessage(this._remoteClient, data)
+   }
+
+   _onError(error) {
+       console.log(`an error occurred ${error.toString()}`);
+   }
+}
 
 //when a user clicks the login button
 loginBtn.addEventListener("click", function(event) {
@@ -29,22 +91,18 @@ loginBtn.addEventListener("click", function(event) {
  
 ///////////////////Database/////////////////////////////////////////////////////////////////
 
-var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
-  
-function insertData (){ 
-
+var db = openDatabase('CollaboP2PDB', '1.0', 'Application P2P Collaborative_DB', 2 * 1024 * 1024);
+function insertData (user, message){ 
+if(message == undefined) return false;
 db.transaction(function (tx) { 
 //tx.executeSql('DROP TABLE IF EXISTS testNote');
-tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" + 
+tx.executeSql("CREATE TABLE IF NOT EXISTS textNote(" + 
         "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
         "auteur TEXT, " +
         "paragraphe TEXT, " +
         "date TIMESTAMP DEFAULT(datetime('now', 'localtime')))"
     );
-    var txt1=document.getElementById("loginInput").value;
-    var txt2=document.getElementById("msgInput").value;
-    //var d =Date();
-    tx.executeSql("INSERT INTO  testNote (auteur,paragraphe) VALUES(?,?)",[txt1,txt2]);
+   tx.executeSql("INSERT INTO  textNote (auteur,paragraphe) VALUES(?,?)",[user,message]);
  
          })
 
@@ -53,23 +111,12 @@ tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" +
 
 // Button adopter to save receive notes 
 
-function adopter (){ 
+function adopter (owner, message){ 
 
-   db.transaction(function (tx) { 
-         //tx.executeSql('DROP TABLE IF EXISTS SendUserNote');
-    //tx.executeSql('CREATE TABLE IF NOT EXISTS SendUserNote (Id_Note INTEGER, auteur, paragraphe,date,PRIMARY KEY(Id_Note,Auteur))'); 
-        
-        //var txt1=document.getElementById("loginInput").value;
-        //var txt2=document.getElementById("msgInput").value;
-        var b = document.getElementById('chatarea').innerText;
-        document.getElementById('partager1').innerText += b ;// bien
-       // dataChannel.send(val);
-       tx.executeSql("INSERT INTO  testNote (paragraphe) VALUES(?)",[b]);
-     
-           })
-    
-                    
-             }
+   document.getElementById('partager1').innerHTML += "<span style='color: red;'>" + message + "</span><br/>"; ;// bien
+   insertData(owner, message)
+
+}
 
 //End of database
 //////////////////////////////////////////////////////////////////////////
@@ -78,20 +125,31 @@ function adopter (){
 connection.onmessage = function (message) {
    console.log("Got message", message.data);
    var data = JSON.parse(message.data);
-    
    switch(data.type) {
       case "login":
          onLogin(data.success);
          // console.log("Oui alllooooooooo");
          break;
-      case "offer":
-         onOffer(data.offer, data.name);
+      case "usersList":
+         onlineUsers = data.users;
+         // render the list of users to the UI
+         renderUsers();
+         // always set current users list
          break;
-      case "answer":
-         onAnswer(data.answer);
-         break;
-      case "candidate":
-         onCandidate(data.candidate);
+      case "RTCsignal":
+         // data.from = sender
+         // data.to = receiver
+         // if intended recipient
+         // if incoming user dosent have a connection details yet, must be the first attempt to create
+         // create a new record before passing on the signal
+         if(data.to == name){
+            if (!connectedUsers[data.from]) {
+               connectedUsers[data.from] = new Connection(data.from, false)
+            }
+            connectedUsers[data.from].handleSignal(data.signal)
+            // render users, so status, connected or disconnected can be updated
+            renderUsers();
+         }
          break;
       default:
          break;
@@ -102,116 +160,73 @@ connection.onmessage = function (message) {
  
 //when a user logs in
 function onLogin(success) {
- 
-
+   
    if (success === false) {
       alert("oops...try a different username");
       
    } else if (success === true) {
       alert("You logged now under the name of:"+ name);
-      //creating our RTCPeerConnection object
-      var configuration = {
-         "iceServers": [{ "url": "stun:stun.1.google.com:19302" }]
-      };
-        /*
-      myConnection= new webkitRTCPeerConnection(configuration, {
-         optional: [{RtpDataChannels: true}]
-
-
- 
-      });
-      */
-     /*
-      myConnection.push( myConnection= new webkitRTCPeerConnection(configuration, {
-         optional: [{RtpDataChannels: true}]
-
-
- 
-      }));
-     */
-
-/*
-    myConnection[0]= new webkitRTCPeerConnection(configuration, {
-      optional: [{RtpDataChannels: true}]
-   });
-   myConnection[1]= new webkitRTCPeerConnection(configuration, {
-      optional: [{RtpDataChannels: true}]
-
-   });
-*/
+   }
    
-myConnection[0]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
+}
 
-});
+// render users 
+
+function renderUsers(){
+   var list = document.getElementById('users');
+   var connectedUsersKey = Object.keys(connectedUsers);
+   // if it's one, I'm the only one logged in 
+   // if it's 0, I'm yet to set a name
+   var html = '';
+   if (onlineUsers.length === 0 || onlineUsers.length === 1) {
+      html += '<li> No member online </li>'
+      list.innerHTML = html
+      // reset to empty just in case we have dead users that were not accurately destroyed
+      connectedUsers = {};
+      return
+  }else{
+   // check all connected users. If the user just logged off, connection might not be around.
+   // loop through connected users and clear dead users. 
+   // so on using the same name, system dosen't wrongly label them connected.
    
-myConnection[1]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[2]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[3]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[4]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[5]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[6]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-   
-myConnection[7]= new webkitRTCPeerConnection(configuration, {
-   optional: [{RtpDataChannels: true}]
-
-});
-
-     for (let i = 0; i < myConnection.length; i++) {
-    
-      console.log("RTCPeerConnection object was created");
-      console.log(myConnection[0]);
- 
-      //setup ice handling
-      //when the browser finds an ice candidate we send it to another peer
-      myConnection[i].onicecandidate = function (event) {
-        otherUsername = otherUsernameInput.value;// test
-        otherUsername=connectedUser[i]///ok?
-         if (event.candidate) {
-            send({
-              name:otherUsername, //ajout ?
-               type: "candidate",
-               candidate: event.candidate
-            });
-         }
+   connectedUsersKey.forEach(u => {
+      var index = onlineUsers.indexOf(u);
+      // user was not found, must have been disconnected 
+      if(index < 0){
+         delete connectedUsers[u];
       }
-  
-        
-        
-     };
+   })
+   
 
-        openDataChannel();
-        
+   // loop over all users
+   for (var index = 0; index < onlineUsers.length; index++) {
+      var element = onlineUsers[index]
+      // verify the user isn't the logged in user
+      if (element !== name) {
+          var connectOrDisconnect = 'disconnected';
+          var connectOrDisconnectButton = `<button onclick="initiateOrCancel('${element}')">Connect</button>`;
+          // check if there is already a connection object for the user and render accordingly
+          if(connectedUsers[element]){
+             connectOrDisconnect = 'connected';
+             connectOrDisconnectButton = `<button onclick="initiateOrCancel('${element}', true)">Disconnect</button>`;
+          }
+          html += `<li>${element} (${connectOrDisconnect}) ${connectOrDisconnectButton}</li>`;
+      }
+   }
+   list.innerHTML = html
+  }
+}
+
+function initiateOrCancel(clientId, disconnect){
+   if(disconnect){
+      // we're disconnectiong
+      connectedUsers[clientId].destroy();
+   }else{
+      connectedUsers[clientId] = new Connection(clientId, true)
    }
 
-// user online or connected
+}
 
-
-
-};
  
 connection.onopen = function () {
    console.log("Connected");
@@ -225,140 +240,27 @@ connection.onerror = function (err) {
 
 
 function send(message) {
-   for (let i= 0; i < connectedUser.length; i++) {
-     if (otherUsername===connectedUser[i]){
-   //if (connectedUser[i]) {
-      message.name = connectedUser[i];
-
-   }
-}
    connection.send(JSON.stringify(message));
 };
-//setup a peer connection with another user
-connectToOtherUsernameBtn.addEventListener("click", function () {
- 
-   otherUsername = otherUsernameInput.value;
-   connectedUser.push(otherUsername) ;
-   
- 
-   if (otherUsername.length > 0) {
-      for (let i = 0; i < myConnection.length; i++) {
-         if(otherUsername===connectedUser[i]){ 
 
-      //make an offer
-      myConnection[i].createOffer(function (offer) {
-         console.log();
-            
-         send({
-            type: "offer",
-            offer: offer
-         });
-            
-         myConnection[i].setLocalDescription(offer);
-      }, function (error) {
-         alert("An error has occurred.");
-      });
-   }
-   console.log("connection is established");
+function receiveMessage(user, message){
+   chatArea.innerHTML += user + ": " + message+ `<button onclick="adopter('${user}','${message}')">adopt</button><br/>`;
 }
-}});
  
-//when somebody wants to call us
-function onOffer(offer, name) {
-   for (let i= 0; i <  myConnection.length; i++) {
-      if (otherUsername===connectedUser[i]){
-   connectedUser[i] = name;
+ //when a user clicks the send message button
 
-   console.log("On offfer"+name)
-   myConnection[i] .setRemoteDescription(new RTCSessionDescription(offer));
-    
-   myConnection[i].createAnswer(function (answer) {
-      myConnection[i].setLocalDescription(answer);
-      console.log(" local desc "+answer)
-      send({
-         type: "answer",
-         answer: answer,
-         name // ajout ça marche 
-      });
-        
-   }, function (error) {
-      alert("oops...error");
-   });
-      };
-
-};
-}
-
-
-
-//when another user answers to our offer
-function onAnswer(answer) {
-   for (let i= 0; i <  myConnection.length; i++) {
-     // 
-      if (otherUsername===connectedUser[i] ){// ajouter  (message.name!=connectedUser[i])
-        console.log("answer to offert" +answer+"quel nom"+otherUsername)
-   
-   myConnection[i].setRemoteDescription(new RTCSessionDescription(answer));
-   console.log("answer to offert" +answer)
-   
-}}}
- 
-//when we got ice candidate from another user
-function onCandidate(candidate) {
-   for (let i= 0; i <  myConnection.length; i++) {
-      if (otherUsername===connectedUser[i]){
-        // console.log("ice candidate" +answer+"quel nom"+otherUsername)
-   
-   myConnection[i].addIceCandidate(new RTCIceCandidate(candidate));
-   //console.log("conaection name" +candidate+"quel nom"+otherUsername)
-   
-       
-
-     } 
-
-   }
-
-}
-
-//creating data channel
-function openDataChannel() {
-
-   for (let i = 0; i < myConnection.length; i++) {
-      
-     var dataChannelOptions = {
-      reliable:true
-   };
-    
-   dataChannel[i] =  myConnection[i].createDataChannel("myDataChannel", dataChannelOptions);
-    
-   dataChannel[i].onerror = function (error) {
-      console.log("Error:", error);
-   };
-    
-   dataChannel[i].onmessage = function (event) {
-     // console.log("Got message:", event.data);
-
-       //when we receive a message from the other peer, display it on the screen
- 
-      chatArea.innerHTML += event.data + "<button type='button' onclick='adopter()'>Adopter</button><br/>";
-        
-  
-   }
-
-       
-   };
-}
-  //when a user clicks the send message button
-
- // (si on veux que le sender voit son message aussi on peut mettre ce bout de code au dessous apres la variable (var))
- //= chatArea.innerHTML += name + ": " + val + "<br />";
-sendMsgBtn.addEventListener("click", function (event) {
+ sendMsgBtn.addEventListener("click", function (event) {
    console.log("send message");
-   var val = msgInput.value;
    var val1= msgInput.value;
-  //chatArea.innerHTML += name + ": " + val + "<button type='button' onclick='doClose()' > adopter </button><br/>";
-   partager.innerHTML += name + ": " + val1+ "<br/>";
-   dataChannel[i].send(val);
-  // dataChannel.send(val1);
-  
+   if(val1){
+      partager.innerHTML += val1+ "<br/>";
+      insertData(name, val1);
+      // get the keys of all users currently connected to
+      var usersTosend = Object.keys(connectedUsers);
+      // loop over the connections and send them a message via datachannels
+      usersTosend.forEach(u => {
+         connectedUsers[u].send(val1);
+      })
+   }
+   msgInput.value = '';
 });

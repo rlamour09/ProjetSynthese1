@@ -6,15 +6,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>  
     <script type="text/javascript" src="client.js"></script>
 
-      
+   <!-- Start of the database script-->   
    <script>
-    var db = openDatabase('TestDB', '1.0', 'Test DB', 2 * 1024 * 1024); 
+    var db = openDatabase('CollaboP2PDB', '1.0', 'Application P2P Collaborative_DB', 2 * 1024 * 1024); 
   
   function Insert(){ 
   
   db.transaction(function (tx) { 
-  //tx.executeSql('DROP TABLE IF EXISTS testNote');
-  tx.executeSql("CREATE TABLE IF NOT EXISTS testNote(" + 
+ // tx.executeSql('DROP TABLE IF EXISTS testNote');
+  tx.executeSql("CREATE TABLE IF NOT EXISTS textNote(" + 
           "id unique, " +
           "auteur TEXT, " +
           "paragraphe TEXT, " +
@@ -23,21 +23,18 @@
       var id = document.getElementById("tbID").value;  
       var txt1=document.getElementById("loginInput").value;
       var txt2=document.getElementById("msgInput").value;
-      //var d =Date();
-      //tx.executeSql("INSERT INTO  testNote (auteur,paragraphe) VALUES(?,?)",[txt1,txt2]);
-      tx.executeSql('insert into testNote(id,auteur, paragraphe) values(' + id + ',"' + txt1 + '","' + txt2 + '")'); 
+      tx.executeSql('insert into textNote(id,auteur, paragraphe) values(' + id + ',"' + txt1 + '","' + txt2 + '")'); 
            });
   
            alldetails();     
            }
 
-        //// del fonction
+        //// del function
 
            function del() {  
             var id = document.getElementById("ddlid").value;  
-          //  alert(id);  
-            db.transaction(function (tx) {  
-                tx.executeSql('delete from testNote where id=' + id + '');  
+          db.transaction(function (tx) {  
+                tx.executeSql('delete from textNote where id=' + id + '');  
             });  
   
             empidbind();  
@@ -51,18 +48,17 @@
             var id = document.getElementById("ddlid").value;  
   
             db.transaction(function (tx) {  
-                tx.executeSql('SELECT * from testNote where id=' + id + '', [], function (tx, results)  
+                tx.executeSql('SELECT * from textNote where id=' + id + '', [], function (tx, results)  
                 {  
                     document.getElementById("loginInput").value = results.rows.item(0).auteur;  
                     document.getElementById("msgInput").value = results.rows.item(0).paragraphe;  
-                    //document.getElementById("tbLdept").value = results.rows.item(0).did;  
-                    
-                      
+                           
+                     
                 }, null);  
             });  
              
         }  
-// showdel pour montrer les bouttons
+// showdel to show buttons
 
         function showdel() {  
   
@@ -79,17 +75,15 @@
   ////////////  
   $('#rowName').hide();  
   $('#rowLocation').hide();  
-  //$('#rowdept').hide();  
-}  
+ }  
 
-/// showwin()
+/// showwin() hiden buttons
 
 
 function showin()  
         {  
             $('#tdid').hide();  
             $('#tdorginal').show();  
-            
             $('#btnupdate').hide();  
             $('#btnInsert').show();  
             $('#btndel').hide();  
@@ -99,15 +93,11 @@ function showin()
             ////////////  
             $('#rowName').show();  
             $('#rowLocation').show();  
-           // $('#rowdept').show();  
-  
-            /////////////  
+           /////////////  
           document.getElementById("tbID").value='';  
           document.getElementById("loginInput").value='';
           document.getElementById("msgInput").value='';
-         // document.getElementById("tbLdept").value='1';  
-  
-               empidbind();  
+           empidbind();  
         }  
 
 // empidbind
@@ -115,7 +105,7 @@ function showin()
 function empidbind()  
         {  
             db.transaction(function (tx) {  
-                tx.executeSql('SELECT * from testNote', [], function (tx, results) {  
+                tx.executeSql('SELECT * from textNote', [], function (tx, results) {  
                     var len = results.rows.length, i;  
                     document.getElementById("ddlid").innerHTML = '';  
                     var str = '';  
@@ -134,7 +124,6 @@ function empidbind()
         {  
             empidbind();  
   
-  
             $('#tdorginal').hide();  
             $('#tdid').show();  
             $('#btnupdate').show();  
@@ -145,18 +134,16 @@ function empidbind()
             $('#btndeleteshw').show();  
             $('#rowName').show();  
             $('#rowLocation').show();  
-           // $('#rowdept').show();  
-              
+         
         }  
-  // update 
+  // update the notes 
   
        function update() {  
           var id = document.getElementById("ddlid").value;  
             var txt1=document.getElementById("loginInput").value;
             var txt2=document.getElementById("msgInput").value;
             db.transaction(function (tx) {  
-                //tx.executeSql('update testNote set auteur="' + txt1 + '"paragraphe="' + txt2 + '" where id= ' + id + ''); 
-                tx.executeSql('update testNote set auteur=?, where auteur= ?',[txt1,txt2]); 
+                tx.executeSql('update textNote set auteur=?, paragraphe=? where id= ?',[txt1,txt2, id]); 
             });  
            
             alldetails();  
@@ -167,29 +154,90 @@ function empidbind()
 function alldetails()  
 {  
     db.transaction(function (tx) {  
-        tx.executeSql('SELECT * FROM testNote', [], function (tx, results) {  
+        tx.executeSql('SELECT * FROM textNote', [], function (tx, results) {  
             var len = results.rows.length, i;  
-            // document.getElementById("tblGrid").innerHTML = '';  
-           // $("#displayData").find("tr:gt(0)").remove();  
-            var str = '';  
+            var str = `<tr style="background-color:black;color:white;font-size:18px;">  
+                <td >  
+                    ID  
+                </td>  
+                <td id="noteheader">  
+                    Auteur  
+                </td>  
+                <td>  
+                    Note  
+                </td>  
+                <td >  
+                    Date  
+                </td>  
+              </tr>`;  
             for (i = 0; i < len; i++) {  
                 str += "<tr>";  
                 str += "<td>" + results.rows.item(i).id + "</td>";  
                 str += "<td>" + results.rows.item(i).auteur + "</td>";  
-                str += "<td>" + results.rows.item(i).paragraphe + "</td>";  
+                str += "<td class='note'>" + results.rows.item(i).paragraphe + "</td>";  
                 str += "<td>" + results.rows.item(i).date + "</td>";  
                 str += "</tr>";  
-                document.getElementById("displayData").innerHTML += str;  
-                str = '';  
             }  
+            document.getElementById("displayData").innerHTML = str;  
+            str = '';  
         }, null); 
         
-      //  updte()
     });  
 
 }  
-    
-    </script>
+// Function to download the notes in the database
+function downloadCSV(csv, filename) {
+   var csvFile;
+   var downloadLink;
+
+   // CSV file
+   csvFile = new Blob([csv], {type: "text/csv"});
+
+   // Download link
+   downloadLink = document.createElement("a");
+
+   // File name
+   downloadLink.download = filename;
+
+   // Create a link to the file
+   downloadLink.href = window.URL.createObjectURL(csvFile);
+
+   // Hide download link
+   downloadLink.style.display = "none";
+
+   // Add the link to DOM
+   document.body.appendChild(downloadLink);
+
+   // Click download link
+   downloadLink.click();
+}
+
+// Export table from the database 
+function exportTableToCSV(filename) {
+   var table_id = "displayData"
+   // Select rows from table_id
+   var rows = document.querySelectorAll('table#' + table_id + ' tr ');
+   // Construct csv
+   var csv = [];
+   for (var i = 0; i < rows.length; i++) {
+       var row = [], cols = rows[i].querySelectorAll('td.note, th');
+       for (var j = 0; j < cols.length; j++) {
+           // Clean innertext to remove multiple spaces and jumpline (break csv)
+           var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+           // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+           data = data.replace(/"/g, '""');
+           // Push escaped string
+           row.push('"' + data + '"');
+       }
+       csv.push(row.join(';'));
+   }
+   var csv_string = csv.join('\n');
+   // Download CSV file
+   downloadCSV(csv_string, filename);
+}
+   
+    </script> 
+<!--end of the database script-->
 
      <link
       rel="stylesheet"
@@ -197,23 +245,23 @@ function alldetails()
       integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
       crossorigin="anonymous"/>
     <link rel="stylesheet" href="css/style.css"/>
-    <title>Collabo App</title>
+    <title>Collabo peer-to-peer App</title>
   </head>
     
     <body>
 
         <header class="join-header">
                 <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
-                <a href="index.html" >Page Acceuille</a>
+                <a href="index.html" target="_blanc"><b>Page Acceuil</b></a>
         </header>
 
       <h2><i class="fas " style = "margin: 30px 2px -20px"></i>Affichage des notes de la base de donnée </h2>
       <br/> 
       <!-- lien pour Affichage des notes pour effacement ou pour mettre à jour  -->
-       <button style = "margin:50px 10px -10" onclick="alldetails()">Click ici pour afficher les notes </button>
+       <button style = "color:blue; margin:50px 10px -10" onclick="alldetails()" class="btn">Click ici pour afficher les notes </button>
 
         <!-- Affichage des notes pour effacement ou pour mettre à jour  -->
-         <!-- <div id = "displayNotes" type = "text" ></div>-->
+        
     <br/><br/>
     <table id="tblinsert">  
         <tr>  
@@ -227,45 +275,33 @@ function alldetails()
         <tr id="rowName">  
             <td>Login:</td>  
             <td><input type = "text" id = "loginInput" /></td>  
-
         </tr>  
         <tr id="rowLocation">  
             <td>Notes:</td>  
-            <td><textarea row="5" cols="50" type = "text" id = "msgInput"> </textarea></td>  
+            <td><textarea row="50" cols="1150" type = "text" id = "msgInput"> </textarea></td>  
         </tr>  
     </table>
-    <br/><br/>  
-    <button id="btnInsert" onclick="Insert()" style="color:green;display:block">Save</button>  
-    <button id="btnupdate" onclick="update()" style="color:blue;display:none">Update</button>  
-    <button id="btndel" onclick="del()" style="color:red;display:none">Delete</button>  
-      
-    <br /><br />  
-    <button id="btnupdateshw" onclick="showupdte()" style="color:red">update notes details</button>  
-    <button id="btndeleteshw" onclick="showdel()" style="color:blue">Delete notes details</button>  
-    <button id="btninsertshw" onclick="showin()" style="color:green;display:none">save notes details</button>  
-    <br /><br />  
-        
-         <table id="displayData" cellpadding="10px" cellspacing="0" border="1">  
-            <tr style="background-color:black;color:white;font-size:18px;">  
-                <td >  
-                    ID  
-                </td>  
-                <td >  
-                    Auteur  
-                </td>  
-                <td >  
-                    Note  
-                </td>  
-                <td >  
-                    Date  
-                </td>  
-              </tr>  
-          </table>  
-  
-      <!-- Script test
- <script src = "client.js"></script>-->
-         
+     <!--Les bouttons  -->
+    <button id="btnInsert" onclick="Insert()" style="color:green;display:block" class="btn">Save</button>  
+    <button id="btnupdate" onclick="update()" style="color:blue;display:none" class="btn">Update</button>  
+    <button id="btndel" onclick="del()" style="color:red;display:none" class="btn">Delete</button>  
+    <br />
+    <button id="btnupdateshw" onclick="showupdte()" style="color:red" class="btn">update notes details</button>  
+    <button id="btndeleteshw" onclick="showdel()" style="color:blue" class="btn">Delete notes details</button>  
+    <button id="btninsertshw" onclick="showin()" style="color:green;display:none" class="btn">save notes details</button>
+    <button id="downloadCsv" onclick="exportTableToCSV('csvFile')" style="color:green;" class="btn">Download Csv</button>   
+    <br />
+      <!--La table pour display les notes -->
+        <table id="displayData" cellpadding="10px" cellspacing="0" border="1">   
+        </table>  
+           <br>
+        <!--Pied de page -->  
+        <footer class="pied">
+            <p>
+                &copy; 2020 | Réalisé par Raymond Lamour et Junior-Hebert Derifond
+            </p>
+        </footer>
+
      </body>
 
-    
 </html>

@@ -8,72 +8,85 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
       integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
       crossorigin="anonymous"/>
-    <link rel="stylesheet" href="css/style.css"/>
-    <title>Collabo App</title>
+    <link rel="stylesheet" href="css/pages.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.1.2/simplepeer.min.js"></script>
+    <title>peer-to-peer App</title>
   </head>
-    
-    <body>
-
-        <header class="join-header">
-                <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
-      </header>
-
-      <a style = "margin:50px 10px -10" href="displayNotes.html" target="_blank" >Pour faire la gestion de tes notes cliquer ici </a>
-       <!-- <button style = "margin:50px 10px -10" onclick="alldetails()">Afficher les notes  </button>-->
-
-      <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Prise de note</h1>
-         <!-- Ici les entrees pour le loggin et pour etablir la connection avec les autres utilisateurs -->
-         <div style ="margin: 20px 2px -10px">
-            <div id = "container1">
-               <input type = "text" id = "loginInput" />
-               <button id = "loginBtn">Login</button>
-            </div>
-            
-            <div>
-               <input type = "text" id = "otherUsernameInput" />
-               <button id = "connectToOtherUsernameBtn">Etablir la connection</button>
-            </div>
+   <!-- Corps de l'applications -->
+  <body>
+   <nav class="col-1" id="couleur">
+      <!-- Ici les entrees pour le loggin et pour etablir la connection avec les autres utilisateurs  -->
+      <h1><i class="fas " style = "margin: 30px 2px -20px"></i>Login section!!!</h1>
+      <div style ="margin: 20px 2px -10px">
+         <div id = "container1">
+            <label ><b>Username</b></label>
+           <input type = "text" id = "loginInput" />
+           <button id = "loginBtn"  type="button" class="btn">Login</button>
          </div>
+      </div> 
+<br>
+<h1><i class="fas " style = "margin: 30px 2px -20px"></i>Utilisateurs En ligne</h1>
+            <!-- Cette endroit est pour afficher les utilisateurs connectés  -->
+             <div class = "row" style = "margin: 30px 2px -10px">
+            <h3><i class="fas fa-users"></i> Utilisateurs</h3>
+            <ul id="users"></ul>
+            </div>
 
-    <!-- Cette endroit est pour afficher les utilisateurs connectés  -->
-    <div class = "row" style = "margin: 30px 2px -10px">
-      <h3><i class="fas fa-users"></i> Users</h3>
-      <ul id="users"></ul>
-          <!-- <div id = "utilisateurs" type = "text" ></div> -->
-    </div>
+   </nav>
+   <!-- autre section  -->
+   <div class="col-2">
+      <header class="headPage">
+         <h1><i class="fas "></i>Application peer-to-peer d’édition collaborative </h1>
 
-     <!-- les paragraphes partager et sauvegarder a la base de données  -->
+      </header>
+   <div class="content">
    
-     <div class = "row" style = "margin: 30px 2px -10px">
-      <div class = "panel-heading"><B>Paragraphe partager et sauvegarder</B></div>
-      <br>
-      <div >
-        <p id = "partager" type = "text"  style="color:rgb(82, 30, 6)"></p>
-        <p id = "partager1" type = "text"  style="color:rgb(204, 88, 5)"></p>
+         <nav>
+            <!-- les paragraphes partager et sauvegarder a la base de données  -->
+            <a style = "color:blue; margin:50px 10px -10" href="displayNotes.html" target="_blank" >Pour faire la gestion de tes notes cliquer ici </a>
+
+             <div class = "partager" style = "margin: 30px 2px -10px">
+               <div class = "panel-heading"><B>Paragraphe partager et sauvegarder</B></div>
+               <br>
+               <div >
+                 <p id = "partager" type = "text"  style="color:rgb(82, 30, 6)"></p>
+                 <p id = "partager1" type = "text"  style="color:rgb(204, 88, 5)"></p>
+               </div>
+             </div>
+           
+              <!--  Ecrire vos notes ici-->
+                  <div style = "margin: 50px 2px -10px">
+                  <textarea row="5" cols="50" type = "text" id = "msgInput"> </textarea>
+                  <button id = "sendMsgBtn" style="color:green;display:block;" onclick="insertData ()" class="btn">Partager</button>
+                  </div>
+             <!-- Messages recus par l'autre utilisateur -->
+               <div class = "notesRecus" style = "margin: 30px 2px -10px">
+                  <div class = "panel-heading"><B>Notes Recus</B></div>
+                    <p id = "chatarea" type = "text"  style="color:blue"></p>   
+              
+               </div>
+           
+
+            </nav>
+         <!--
+
+      
+         <aside id="asidecouleur">
+
+            
+         </aside>
+          -->
+
+         
       </div>
+      <footer id="piedPage">
+         <p>
+            &copy; 2020 | Réalisé par Raymond Lamour et Junior-Hebert Derifond
+         </p>
+      </footer>
    </div>
 
-     <!-- -->
-       <!--  Ecrire vos notes ici-->
-         <div style = "margin: 50px 2px -10px">
-         <textarea row="5" cols="50" type = "text" id = "msgInput"> </textarea>
-         <button id = "sendMsgBtn" style="color:green;display:block;" onclick="insertData ()">Partager</button>
-         </div>
-   <!-- Messages recus par l'autre utilisateur -->
-      <div class = "row" style = "margin: 30px 2px -10px">
-         <div class = "panel-heading"><B>Notes Recus</B></div>
-            <p id = "chatarea" type = "text"  style="color:blue"></p>   
-         <!--
-            <table  id = "chatarea" type = "text"  style="color:blue" >  
-            <tbody>
-            </tbody>
-                      
-          </table>  
-        -->      
-      </div>
-
-    
-      <script src = "client.js"></script>
-     </body>
+   <script src = "client.js"></script>
+   </body>
     
 </html>

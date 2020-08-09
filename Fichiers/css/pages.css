@@ -1,0 +1,149 @@
+header, footer, nav, aside {
+	padding: 1em;
+}
+/*-----------------------------------Page CSS la page index------------------------*/
+@media all and (max-width: 800px) and (max-width:1279px) {
+
+	.content {
+		order: 1;
+	}
+	.col-2 {
+		order: 2;
+	}
+	.col-1 {
+
+		order: 3;
+	}
+	footer {
+
+		order: 4;
+	}
+}
+
+body {
+
+	
+	font-family:"Times New Roman",serif;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: row;
+	margin: 0;
+	background-color: #c1d1f1;
+}
+
+.col-2 {
+	display: flex;
+	flex-direction: column;
+	flex: 6;
+}
+.content {
+	font-size: 20px;
+	display: flex;
+	flex-direction: row;
+}
+.content > nav {
+	font-size: 20px;
+	flex: 6;
+	min-height: 60vh;
+}
+/*
+.content > aside {
+	font-size: 15px;
+	background-image: -moz-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -o-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -ms-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -webkit-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	flex: 1;
+}
+*/
+
+/*------------------------------------Bar lateral gauche ------------------------*/
+
+.col-1 {
+	font-size: 15px;
+	padding: 5px 10px;
+	background-image: -moz-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -o-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -ms-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	background-image: -webkit-linear-gradient(25deg, gold 10%, white 15%, khaki 0%);
+	flex: 2;
+
+}
+
+h1, caption {
+
+	font-family: 'Cairo', sans-serif;
+}
+
+
+/*       ------------------------------------- CSS --------  DE LA PAGE Index ------------------------*/
+
+.headPage {
+
+	text-shadow: 2px 2px 1px gray;
+	text-align: center;
+	height: 60px;
+	/*background-image: url("../images/headomotique.jpg");*/
+
+	background-image: -moz-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -o-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -ms-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -webkit-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+}
+
+#couleur {
+
+	background-image: -moz-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -o-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -ms-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -webkit-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+}
+
+#asidecouleur {
+
+	background-image: -moz-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -o-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -ms-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+	background-image: -webkit-linear-gradient(25deg, cyan 10%, dimgray 15%, darkcyan 0%);
+}
+
+#piedPage {
+	width: 100%;
+	height: 60px;
+	background-image: -moz-linear-gradient(25deg, cyan 0%, dimgray 50%, silver 100%);
+	background-image: -o-linear-gradient(25deg, cyan 0%, dimgray 50%, silver 100%);
+	background-image: -ms-linear-gradient(25deg, cyan 0%, dimgray 50%, silver 100%);
+	background-image: -webkit-linear-gradient(25deg, cyan 0%, dimgray 50%, silver 100%);
+}
+
+
+
+/* ------------ Textarea css -------------- */
+
+textarea {
+	width: 50%;
+	padding: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	margin-top: 6px;
+	margin-bottom: 16px;
+	resize: vertical;
+}
+
+label {
+	float: left;
+	width: 12em;
+	text-align: left;
+}
+
+.partager{
+	max-width: 850px;
+	margin: 20px auto;
+	overflow:hidden;
+}
+
+.notesRecus{
+	max-width: 850px;
+	margin: 20px auto;
+	overflow:hidden;
+}
